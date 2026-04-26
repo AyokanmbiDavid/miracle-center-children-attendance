@@ -1,0 +1,166 @@
+import React, { useContext, useState } from 'react';
+import { Search, Users, CheckCircle, Percent, ClipboardX, Send, Loader2, RefreshCw, CalendarDays } from 'lucide-react'; 
+import Table from '../components/Table';
+import { all_provider } from '../components/ContextProvider';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const HomePage = () => {
+  const { setsearch, setyear, setmonth, setweek, alldata, currentroll, attendancedate, refresh, updateattendance } = useContext(all_provider);
+  const [loading, setLoading] = useState(false);
+
+  const totalMembers = alldata?.length || 0;
+  const rollData = currentroll?.roll || [];
+  const presentCount = rollData.filter(p => p.present === true).length;
+  const attendanceRate = totalMembers > 0 ? Math.round((presentCount / totalMembers) * 100) : 0;
+
+  const handleSubmitRoll = async () => {
+    setLoading(true);
+    await updateattendance(currentroll._id, currentroll);
+    setLoading(false);
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      className="w-full max-w-6xl mx-auto min-h-screen bg-[#F8F9FA] px-4 pb-24 pt-6"
+    >
+      {/* 1. HEADER SECTION (Google Style) */}
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 px-2">
+        <div className="flex items-center gap-4">
+            {/* Google-style Icon Logo Container */}
+            <div className="bg-[#0B57D0] p-3 rounded-2xl shadow-blue-200 shadow-lg text-white">
+                <CalendarDays size={24} />
+            </div>
+            <div>
+                <h1 className="text-2xl font-medium text-[#1F1F1F] tracking-tight">Teens Attendance</h1>
+                <p className="text-sm font-medium text-[#44474E] uppercase tracking-widest">
+                    {attendancedate.month} • {attendancedate.week} • {attendancedate.year}
+                </p>
+            </div>
+        </div>
+      </header>
+
+      {/* 2. STATS GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <StatCard label="Database" val={totalMembers} icon={<Users size={22} />} tone="blue" />
+        <StatCard label="Present" val={presentCount} icon={<CheckCircle size={22} />} tone="green" />
+        <StatCard 
+          label="Attendance" 
+          val={`${attendanceRate}%`} 
+          icon={<Percent size={22} />} 
+          tone="purple" 
+          progress={attendanceRate} 
+        />
+      </div>
+
+      {/* 3. SEARCH & CONTROLS (Floating Container) */}
+      <div className="sticky top-20 bg-white rounded-4xl p-2 md:p-3 mb-8 flex flex-col lg:flex-row gap-2">
+        
+        {/* Google Style Search Input */}
+        <div className="relative flex-grow group py-4">
+          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#0B57D0] transition-colors">
+            <Search size={20} />
+          </div>
+          <input 
+            type="text" 
+            placeholder="Search members by name..." 
+            onChange={(e) => setsearch(e.target.value)}
+            className="w-full bg-[#F1F3F4] text-sm py-4 pl-14 pr-6 rounded-full border border-transparent focus:bg-white focus:ring-1 focus:ring-[#DEE2E6] outline-none transition-all"
+          />
+        </div>
+
+        {/* Date Selectors & Action */}
+        <div className="flex flex-col sm:flex-row items-center gap-2 p-1">
+          <div className="flex gap-2 w-full sm:w-auto">
+            <DateSelect value={attendancedate.year} onChange={setyear} options={['2026', '2025']} />
+            <DateSelect value={attendancedate.month} onChange={setmonth} options={['january','february','march','april','may','june']} />
+            <DateSelect value={attendancedate.month} onChange={setweek} options={['week 1','week 2','week 3','week 4','week 5']} />
+          </div>
+
+          <button 
+            onClick={handleSubmitRoll} 
+            disabled={loading}
+            className={`
+              w-full sm:w-auto flex items-center justify-center gap-2 
+              px-10 py-4 rounded-full font-medium text-sm transition-all
+              ${loading ? "bg-gray-100 text-gray-400" : "bg-blue-500 hover:bg-blue-600 text-white hover:shadow-md active:scale-95"}
+            `}
+          >
+            {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={18} />}
+            <span>{currentroll?._id ? "Save Changes" : "Begin Roll"}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 4. CONTENT AREA */}
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={attendancedate.month + attendancedate.week} 
+          initial={{ opacity: 0, y: 10 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          className="bg-white rounded-[32px] overflow-hidden shadow-[0_2px_6px_rgba(0,0,0,0.04)] border border-[#F1F3F4]"
+        >
+          {rollData.length > 0 ? <Table /> : <EmptyState date={attendancedate} />}
+        </motion.div>
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
+/* MATERIAL 3 SUB-COMPONENTS */
+
+const StatCard = ({ label, val, icon, tone, progress }) => {
+  const tones = {
+    blue: "bg-[#D3E3FD] text-[#041E49]",
+    green: "bg-[#C4EED0] text-[#072711]",
+    purple: "bg-[#EADDFF] text-[#21005D]"
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-4xl border border-[#F1F3F4] flex flex-col justify-between h-32 transition-shadow">
+      <div className="flex items-center gap-4">
+        <div className={`p-3 rounded-2xl ${tones[tone]}`}>{icon}</div>
+        <div>
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{label}</p>
+            <h3 className="text-2xl font-medium text-[#1F1F1F]">{val}</h3>
+        </div>
+      </div>
+      {progress !== undefined && (
+        <div className="w-full h-3 bg-[#F1F3F4] rounded-full overflow-hidden mt-4">
+          <motion.div 
+            initial={{ width: 0 }} 
+            animate={{ width: `${progress}%` }} 
+            className="h-full rounded-full bg-blue-400" 
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DateSelect = ({ value, onChange, options }) => (
+  <div className="relative group flex-grow sm:flex-grow-0">
+    <select 
+      value={value} 
+      onChange={(e) => onChange(e.target.value)} 
+      className="appearance-none bg-[#F1F3F4] rounded-full pl-5 pr-5 py-4 text-sm font-medium capitalize border-0 outline-none transition-all  cursor-pointer hover:bg-[#E8EAED]"
+    >
+      {options.map(o => <option key={o} value={o}>{o}</option>)}
+    </select>
+  </div>
+);
+
+const EmptyState = ({ date }) => (
+  <div className="flex flex-col items-center justify-center py-32 px-10 text-center">
+    <div className="w-20 h-20 bg-[#F1F3F4] rounded-[24px] flex items-center justify-center mb-6">
+      <ClipboardX size={32} className="text-gray-400" />
+    </div>
+    <h4 className="text-lg font-medium text-[#1F1F1F]">No Attendance Started</h4>
+    <p className="text-gray-500 text-sm mt-1">
+        Begin a session for {date.month} {date.week}
+    </p>
+  </div>
+);
+
+export default HomePage;
