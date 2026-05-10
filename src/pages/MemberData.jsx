@@ -63,18 +63,18 @@ const MemberData = () => {
           {/* Header Area */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 px-2">
             <div className="flex items-center gap-4">
-              <div className="bg-[#D3E3FD] p-3 rounded-2xl text-[#041E49]">
+              <div className="bg-[#D3E3FD] p-3 rounded-lg text-[#041E49]">
                 <UserCircle size={32} />
               </div>
               <div>
                 <h1 className="text-2xl font-medium text-[#1F1F1F]">Member Directory</h1>
-                <p className="p-2 bg-blue-100 rounded-full text-xs text-[#44474E]"><span className="text-blue-600">{alldata?.length || 0}</span> total records registered</p>
+                <p className="p-2 bg-blue-100 rounded-sm text-xs text-[#44474E]"><span className="text-blue-600">{alldata?.length || 0}</span> total records registered</p>
               </div>
             </div>
             
             <button 
               onClick={downloadPDF}
-              className="flex items-center gap-2 bg-[#0B57D0] text-white px-6 py-3 rounded-full text-sm font-medium hover:shadow-lg transition-all active:scale-95"
+              className="flex items-center gap-2 bg-[#0B57D0] text-white px-6 p-3 rounded-lg text-xs font-medium hover:shadow-lg transition-all active:scale-95"
             >
               <Download size={18} />
               Export PDF
@@ -96,7 +96,7 @@ const MemberData = () => {
                 placeholder="Search by surname (e.g. Adebayo)"
                 value={search}
                 onChange={(e) => setsearch(e.target.value)}
-                className="w-full py-6 pl-14 pr-14 rounded-full bg-white border border-[#DEE2E6]  focus:border-transparent focus:ring-2 focus:ring-[#0B57D0] outline-none text-sm transition-all"
+                className="w-full p-3 pl-14 pr-14 rounded-lg bg-white border border-[#DEE2E6]  focus:border-transparent focus:ring-2 focus:ring-[#0B57D0] outline-none text-xs transition-all"
               />
               {isSearching && (
                 <button 

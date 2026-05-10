@@ -76,7 +76,7 @@ const AllAttendance = () => {
   };
 
     const DateSelect = ({ value, set, options }) => (
-  <select value={value} onChange={(e) => setsearchatt({...searchatt, [set]:e.target.value})} className="flex-1 bg-gray-100 border-0 rounded-full px-4 py-3 text-sm font-bold capitalize outline-none">
+  <select value={value} onChange={(e) => setsearchatt({...searchatt, [set]:e.target.value})} className="flex-1 bg-gray-100 border-0 rounded-lg p-3 px-4 text-xs font-bold capitalize outline-none">
     {options.map(o => <option key={o} value={o}>{o}</option>)}
   </select>
   )
@@ -88,7 +88,7 @@ const AllAttendance = () => {
       <div className="max-w-5xl mx-auto p-1 mt-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div className='flex gap-3'>
-            <div className="h-full bg-blue-200 p-5 rounded-3xl">
+            <div className="h-full bg-blue-200 p-5 rounded-xl">
             <FilePlus size={25}/>
             </div>
            <div>
@@ -100,7 +100,7 @@ const AllAttendance = () => {
           <button 
             onClick={downloadAllHistory}
             disabled={attendance.length === 0}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-sm rounded-full text-white px-6 py-3 shadow-lg transition-all active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-xs rounded-lg text-white px-6 py-3 shadow-lg transition-all active:scale-95 disabled:opacity-50"
           >
             <FileText size={20} /> Download All (PDF)
           </button>
@@ -135,13 +135,13 @@ const AllAttendance = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="bg-white border border-gray-200 rounded-4xl p-4 flex flex-wrap items-center justify-between transition-all group"
+                  className="bg-white border border-gray-200 rounded-xl p-4 flex flex-wrap items-center justify-between transition-all group"
                 >
                   <div 
                     className="flex items-center gap-4 cursor-pointer flex-1 min-w-[200px]"
                     onClick={() => handleViewRecord(att)}
                   >
-                    <div className="p-3 bg-green-600 rounded-2xl text-white transition-colors">
+                    <div className="p-3 bg-green-600 rounded-xl text-white transition-colors">
                       <Calendar size={24} />
                     </div>
                     <div>
@@ -153,7 +153,7 @@ const AllAttendance = () => {
                   </div>
 
                   <div className="max-sm:w-full flex items-center max-sm:flex-col  gap-4 mt-4 md:mt-0">
-                    <div className="w-full flex justify-center gap-4 text-sm rounded-3xl bg-gray-50 px-4 py-2 border border-gray-100">
+                    <div className="w-full flex justify-center gap-4 text-sm rounded-lg bg-gray-50 px-4 py-2 border border-gray-100">
                       <div className="text-center">
                         <p className="text-gray-400 uppercase text-[9px] font-bold">Present</p>
                         <p className="font-bold text-green-600">{present}</p>
@@ -167,10 +167,10 @@ const AllAttendance = () => {
                     <div className="w-full flex justify-center items-center gap-1">
                       <button 
                         onClick={() => downloadSingleAttendance(att)}
-                        className="p-3 w-full bg-blue-100 flex justify-center rounded-full text-blue-600 hover:bg-blue-50 transition-colors"
+                        className="p-3 w-full bg-blue-100 flex justify-center rounded-md text-blue-600 hover:bg-blue-50 transition-colors"
                         title="Download this record"
                       >
-                        <Download size={20} />
+                        <Download size={14} />
                       </button>
 
                       <button 
@@ -180,10 +180,10 @@ const AllAttendance = () => {
                             deleteattendance(att._id); 
                           }
                         }}
-                        className="p-3 w-full bg-red-100 flex justify-center rounded-full text-red-500 hover:bg-red-50 transition-colors"
+                        className="p-3 w-full bg-red-100 flex justify-center rounded-md text-red-500 hover:bg-red-50 transition-colors"
                         title="Delete Record"
                       >
-                        <Trash2 size={20} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>

@@ -8,36 +8,33 @@ const AdminPage = () => {
   const { addnewmember, Notify } = useContext(all_provider);
 
   const [newdata, setnewdata] = useState({
-    surname: '',
-    firstName: '',
-    middleName: '',
-    phoneNumber: '',
-    dateOfBirth: '',
-    emailAddress: '',
     gender: '',
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newdata.surname || !newdata.firstName || !newdata.phoneNumber) {
+    const formData = new FormData(e.target)    
+    const surname = formData.get('surname')
+    const phoneNumber = formData.get('phoneNumber')
+    const firstName = formData.get('firstName')
+    const middleName = formData.get('middleName')
+    const dateOfBirth = formData.get('dateOfBirth')
+    const emailAddress = formData.get('emailAddress')
+
+    if (surname || firstName || phoneNumber) {
       Notify("failure", "Please fill in the required fields");
       return;
     }
 
     await addnewmember(
-      newdata.surname, newdata.firstName, newdata.middleName, 
-      newdata.phoneNumber, newdata.dateOfBirth, newdata.gender, 
-      newdata.emailAddress
+      surname, firstName, middleName, 
+      phoneNumber, dateOfBirth, newdata.gender, 
+      emailAddress
     );
-
-    setnewdata({
-      surname: '', firstName: '', middleName: '',
-      phoneNumber: '', dateOfBirth: '', emailAddress: '', gender: '',
-    });
   };
 
   // Helper for M3 Styled Inputs (Tonal Container Style)
-  const InputField = ({ label, placeholder, value, onChange, type = "text", required }) => (
+  const InputField = ({ label,name, placeholder, value, onChange, type = "text", required }) => (
     <div className="flex flex-col gap-1.5">
       <label className="ml-4 text-[12px] font-medium text-[#44474E]">
         {label} {required && <span className="text-[#B3261E]">*</span>}
@@ -45,9 +42,8 @@ const AdminPage = () => {
       <input
         type={type}
         placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full bg-[#F1F3F4] hover:bg-[#E8EAED] focus:bg-white border-b-2 border-transparent focus:border-[#0B57D0] rounded-4xl px-5 py-4 text-sm transition-all outline-none"
+        name={name}
+        className="w-full bg-[#F1F3F4] hover:bg-[#E8EAED] focus:bg-white border-b-2 border-transparent focus:border-[#0B57D0] rounded-md p-3 text-xs transition-all outline-none"
       />
     </div>
   );
@@ -85,55 +81,49 @@ const AdminPage = () => {
               <InputField 
                 label="Surname" required
                 placeholder="e.g. Adebayo" 
-                value={newdata.surname} 
-                onChange={(e) => setnewdata({ ...newdata, surname: e.target.value })} 
+                name={'surname'}
               />
 
               <InputField 
                 label="First Name" required
                 placeholder="e.g. Samuel" 
-                value={newdata.firstName} 
-                onChange={(e) => setnewdata({ ...newdata, firstName: e.target.value })} 
+                name={'firstname'}
               />
 
               <InputField 
                 label="Middle Name" 
                 placeholder="Optional" 
-                value={newdata.middleName} 
-                onChange={(e) => setnewdata({ ...newdata, middleName: e.target.value })} 
+                name={'middlename'}
               />
 
               <InputField 
                 label="Phone Number" type="tel" required
                 placeholder="080XXXXXXXX" 
-                value={newdata.phoneNumber} 
-                onChange={(e) => setnewdata({ ...newdata, phoneNumber: e.target.value })} 
+                name={'phoneNumber'}
               />
 
               <InputField 
                 label="Date of Birth" 
                 placeholder="DD/MM/YYYY" 
-                value={newdata.dateOfBirth} 
-                onChange={(e) => setnewdata({ ...newdata, dateOfBirth: e.target.value })} 
+                name={'dateOfBirth'}
               />
 
               <InputField 
                 label="Email" type="email"
                 placeholder="teen@example.com" 
-                value={newdata.emailAddress} 
-                onChange={(e) => setnewdata({ ...newdata, emailAddress: e.target.value })} 
+                name={'emailAddress'}
               />
 
               {/* Gender Segmented Button Group */}
               <div className="flex flex-col gap-1.5">
                 <label className="ml-4 text-[12px] font-medium text-[#44474E]">Gender</label>
-                <div className="flex bg-[#F1F3F4] p-1 rounded-full border border-[#DEE2E6]">
+                <div className="flex bg-[#F1F3F4] text-xs p-1 rounded-lg border border-[#DEE2E6]">
                   {['Male', 'Female'].map((item) => (
                     <button
                       key={item}
                       type="button"
                       onClick={() => setnewdata({ ...newdata, gender: item })}
-                      className={`flex-1 py-3 rounded-full text-sm font-medium transition-all ${
+                      className={`flex-1 py-3 rounded-md text-sm font-medium transition-all ${
                         newdata.gender === item 
                         ? "bg-green-200 text-[#041E49]" 
                         : "text-[#44474E] hover:bg-black/5"
@@ -150,7 +140,7 @@ const AdminPage = () => {
             <div className="flex justify-center md:justify-end pt-8 border-t border-[#F1F3F4]">
               <button
                 type="submit"
-                className="w-full md:w-auto flex items-center justify-center gap-3 bg-[#0B57D0] text-white px-12 py-4 rounded-full font-medium hover:shadow-lg active:scale-95 transition-all"
+                className="w-full text-xs p-3 md:w-auto flex items-center justify-center gap-3 bg-[#0B57D0] text-white px-3 rounded-lg font-medium hover:shadow-lg active:scale-95 transition-all"
               >
                 Register Member <Check size={20} />
               </button>

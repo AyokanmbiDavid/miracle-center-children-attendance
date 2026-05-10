@@ -35,7 +35,7 @@ const Navbar = () => {
 
               <h1 className="font-semibold text-md flex flex-col">
                 Teens Attendance
-                <p className='text-xs text-gray-500 font-normal p-2 rounded-4xl bg-gray-200'>RCCG Miracle Center</p>
+                <p className='text-xs text-gray-500 font-normal p-2 max-md:hidden rounded-4xl bg-gray-200'>RCCG Miracle Center</p>
               </h1>
           </div>
 
@@ -43,22 +43,24 @@ const Navbar = () => {
             {/* refresh button */}
             <button
             onClick={() => refreshpage()}
-            className="bg-gray-200/80 p-2 flex justify-center gap-3 items-center text-gray-600 rounded-4xl text-xs cursor-pointer" >
-              <span className="max-md:hidden">Refresh Page</span>
-             <Loader2Icon className={`${loading && 'animate-spin'}`}
+            className=" p-2 flex justify-center gap-3 items-center text-gray-600 rounded-4xl text-xs cursor-pointer" >
+              <span className="max-md:hidden bg-gray-200/80 p-2 rounded-md">Refresh Page</span>
+             <span className="bg-gray-200/80 p-2 rounded-md">
+              <Loader2Icon size={14} className={`${loading && 'animate-spin'}`}
              size={17}/>
+             </span>
              
             </button>
             {/* home button */}
             <Link to={'/'}
-            className='p-3 hover:bg-green-100/90 rounded-4xl'>
-              <Home className='text-green-700' size={13} />
+            className='p-3 hover:bg-green-100/90 rounded-md'>
+              <Home className='text-green-700' size={14} />
               
             </Link>
             {/* Admin login */}
-          <Link to={'./admin'} className="bg-blue-100 hover:bg-blue-200/80 rounded-4xl text-blue-800 font-bold p-3 px-3 text-xs flex justify-between items-center gap-3 cursor-pointer  duration-200">
+          <Link to={'./admin'} className="bg-blue-600 hover:bg-blue-700/80 rounded-md text-white font-bold p-2 px-3 text-xs flex justify-between items-center gap-3 cursor-pointer  duration-200">
             <span  className='max-md:hidden'>Admin Login</span>
-            <Key size={16} className='rotate-[40deg]'/>
+            <Key size={16} className='rotate-40'/>
           </Link>
           </div>
       </div>

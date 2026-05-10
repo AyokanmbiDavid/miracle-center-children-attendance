@@ -55,10 +55,10 @@ const HomePage = () => {
       </div>
 
       {/* 3. SEARCH & CONTROLS (Floating Container) */}
-      <div className="sticky top-20 bg-white rounded-4xl p-2 md:p-3 mb-8 flex flex-col lg:flex-row gap-2">
+      <div className="sticky top-20 bg-white rounded-xl p-2 md:p-3 mb-8 flex flex-col lg:flex-row gap-2">
         
         {/* Google Style Search Input */}
-        <div className="relative flex-grow group py-4">
+        <div className="relative grow group py-4">
           <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#0B57D0] transition-colors">
             <Search size={20} />
           </div>
@@ -66,7 +66,7 @@ const HomePage = () => {
             type="text" 
             placeholder="Search members by name..." 
             onChange={(e) => setsearch(e.target.value)}
-            className="w-full bg-[#F1F3F4] text-sm py-4 pl-14 pr-6 rounded-full border border-transparent focus:bg-white focus:ring-1 focus:ring-[#DEE2E6] outline-none transition-all"
+            className="w-full bg-[#F1F3F4] text-xs p-3 pl-14 pr-6 rounded-lg border border-transparent focus:bg-white focus:ring-1 focus:ring-[#DEE2E6] outline-none transition-all"
           />
         </div>
 
@@ -74,8 +74,8 @@ const HomePage = () => {
         <div className="flex flex-col sm:flex-row items-center gap-2 p-1">
           <div className="flex gap-2 w-full sm:w-auto">
             <DateSelect value={attendancedate.year} onChange={setyear} options={['2026', '2025']} />
-            <DateSelect value={attendancedate.month} onChange={setmonth} options={['january','february','march','april','may','june']} />
-            <DateSelect value={attendancedate.month} onChange={setweek} options={['week 1','week 2','week 3','week 4','week 5']} />
+            <DateSelect value={attendancedate.month} onChange={setmonth} options={['january','february','march','april','may','june','july','august','september','october','november','december']} />
+            <DateSelect value={attendancedate.week} onChange={setweek} options={['week 1','week 2','week 3','week 4','week 5']} />
           </div>
 
           <button 
@@ -83,7 +83,7 @@ const HomePage = () => {
             disabled={loading}
             className={`
               w-full sm:w-auto flex items-center justify-center gap-2 
-              px-10 py-4 rounded-full font-medium text-sm transition-all
+              p-3 rounded-lg font-medium text-xs transition-all
               ${loading ? "bg-gray-100 text-gray-400" : "bg-blue-500 hover:bg-blue-600 text-white hover:shadow-md active:scale-95"}
             `}
           >
@@ -118,20 +118,20 @@ const StatCard = ({ label, val, icon, tone, progress }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-4xl border border-[#F1F3F4] flex flex-col justify-between h-32 transition-shadow">
+    <div className="bg-white p-6 rounded-lg border border-[#F1F3F4] flex flex-col justify-between h-32 transition-shadow">
       <div className="flex items-center gap-4">
-        <div className={`p-3 rounded-2xl ${tones[tone]}`}>{icon}</div>
+        <div className={`p-3 rounded-xl ${tones[tone]}`}>{icon}</div>
         <div>
             <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{label}</p>
             <h3 className="text-2xl font-medium text-[#1F1F1F]">{val}</h3>
         </div>
       </div>
       {progress !== undefined && (
-        <div className="w-full h-3 bg-[#F1F3F4] rounded-full overflow-hidden mt-4">
+        <div className="w-full h-3 bg-[#F1F3F4] rounded-sm overflow-hidden mt-4">
           <motion.div 
             initial={{ width: 0 }} 
             animate={{ width: `${progress}%` }} 
-            className="h-full rounded-full bg-blue-400" 
+            className="h-full rounded-sm bg-blue-400" 
           />
         </div>
       )}
@@ -140,11 +140,11 @@ const StatCard = ({ label, val, icon, tone, progress }) => {
 };
 
 const DateSelect = ({ value, onChange, options }) => (
-  <div className="relative group flex-grow sm:flex-grow-0">
+  <div className="relative group grow sm:grow-0">
     <select 
       value={value} 
       onChange={(e) => onChange(e.target.value)} 
-      className="appearance-none bg-[#F1F3F4] rounded-full pl-5 pr-5 py-4 text-sm font-medium capitalize border-0 outline-none transition-all  cursor-pointer hover:bg-[#E8EAED]"
+      className="appearance-none bg-[#F1F3F4] rounded-lg pl-5 pr-5 p-3 text-xs font-medium capitalize border-0 outline-none transition-all  cursor-pointer hover:bg-[#E8EAED]"
     >
       {options.map(o => <option key={o} value={o}>{o}</option>)}
     </select>
