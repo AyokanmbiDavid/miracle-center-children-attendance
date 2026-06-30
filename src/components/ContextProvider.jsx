@@ -13,13 +13,115 @@ const api = axios.create({
   }
 });
 
-const ContextProvider = ({ children }) => {
-  const [search, setsearch] = useState("");
+const ContextProvider = ({ children }) => { 
+  const [currentclass,setcurrentclass] = useState('four')
   const [searchresult, setsearchresult] = useState([]);
+  const [attendance,setattendance] = useState([
+              {
+                theclass:'four',
+                month:'february',
+                year:'2026',
+                week:'week 1',
+                roll:[
+                    {
+                        firstname:'Ayo',
+                        lastname:'Demilade',
+                        present: true
+                    },
+                     {
+                        firstname:'Temi',
+                        lastname:'Adewale',
+                        present: false
+                    },
+                     {
+                        firstname:'Dayo',
+                        lastname:'Adeshina',
+                        present: true
+                    },
+                     {
+                        firstname:'Grin',
+                        lastname:'Tommy',
+                        present: true
+                    },
+                     {
+                        firstname:'Bello',
+                        lastname:'affga',
+                        present: false
+                    },
+                ]},
+              {
+                theclass:'six',
+                month:'february',
+                year:'2026',
+                week:'week 1',
+                roll:[
+                    {
+                        firstname:'Bisi',
+                        lastname:'Oladipo',
+                        present: true
+                    },
+                     {
+                        firstname:'Temi',
+                        lastname:'Adewale',
+                        present: false
+                    },
+                     {
+                        firstname:'Olorun',
+                        lastname:'gbemisoke',
+                        present: true
+                    },
+                     {
+                        firstname:'Grin',
+                        lastname:'Tommy',
+                        present: true
+                    },
+                     {
+                        firstname:'Sayo',
+                        lastname:'Tomiwa',
+                        present: false
+                    },
+                ]},
+              {
+                theclass:'nine',
+                month:'february',
+                year:'2026',
+                week:'week 1',
+                roll:[
+                    {
+                        firstname:'bolu',
+                        lastname:'desmond',
+                        present: true
+                    },
+                     {
+                        firstname:'kemi',
+                        lastname:'Adesewa',
+                        present: false
+                    },
+                     {
+                        firstname:'victoria',
+                        lastname:'praise',
+                        present: true
+                    },
+                     {
+                        firstname:'Grin',
+                        lastname:'htt',
+                        present: true
+                    },
+                     {
+                        firstname:'tayo',
+                        lastname:'adenuga',
+                        present: false
+                    },
+              ]}]);
+
+  const [attenddate,setattenddate] = useState({
+      year: '2026',
+      week:'week 1',
+      month: 'febuary'
+    });
   
   // Upgraded IndexedDB hooks preserved for robust offline performance
   const [alldata, setalldata, membersReady] = useIndexedDB("members", []);
-  const [attendance, setattendance, attendanceReady] = useIndexedDB("attendance", []);
   
   const [currentroll, setcurrentroll] = useState({ roll: [] });
   
@@ -85,31 +187,23 @@ const ContextProvider = ({ children }) => {
     }
   }, []);
 
-  // Initial Startup Run
-  useEffect(() => {
-    if (membersReady && attendanceReady) {
-      fetchEverything();
-    }
-  }, [membersReady, attendanceReady]);
+  // // Initial Startup Run
+  // useEffect(() => {
+  //   if (membersReady && attendanceReady) {
+  //     fetchEverything();
+  //   }
+  // }, [membersReady, attendanceReady]);
 
-  // Synchronize Active Calendar Dropdown Matches
-  useEffect(() => {
-    const found = attendance.find(att => 
-      String(att.year) === String(attendancedate.year) && 
-      att.month === attendancedate.month && 
-      att.week === attendancedate.week
-    );
-    setcurrentroll(found || { roll: [] });
-    localStorage.setItem('attendancedate', JSON.stringify(attendancedate));
-  }, [attendancedate, attendance]);
-
-  // Handle Frontend Search Filtering
-  useEffect(() => {
-    const res = (currentroll?.roll || []).filter(p => 
-      p.title.toLowerCase().includes(search.toLowerCase())
-    );
-    setsearchresult(res);
-  }, [search, currentroll]);
+  // // Synchronize Active Calendar Dropdown Matches
+  // useEffect(() => {
+  //   const found = attendance.find(att => 
+  //     String(att.year) === String(attendancedate.year) && 
+  //     att.month === attendancedate.month && 
+  //     att.week === attendancedate.week
+  //   );
+  //   setcurrentroll(found || { roll: [] });
+  //   localStorage.setItem('attendancedate', JSON.stringify(attendancedate));
+  // }, [attendancedate, attendance]);
 
   // Member Action Mutations
   const addnewmember = async (surname, firstName, middleName, phoneNumber, dateOfBirth, gender, emailAddress) => {
@@ -148,13 +242,24 @@ const ContextProvider = ({ children }) => {
     } catch (err) { Notify("failure", "Failed to delete member"); console.error(err); }
   };
 
-  const markattendance = (memberId, status) => {
-    setcurrentroll(prev => ({
-      ...prev,
-      roll: (prev.roll || []).map(p => 
-        (p.memberId === memberId || p.id === memberId) ? { ...p, present: status } : p
-      )
-    }));
+  const markattendance = async(indexi, status) => {
+    let filt = attendance.find(item => item.theclass == currentclass);
+    
+    const newfilt = filt.roll.map((item,index) => index == indexi ? {
+                        firstname:item.firstname,
+                        lastname:item.lastname,
+                        present: status
+                    } : item);
+    
+    
+    const newfiltindex = {
+      theclass: filt.theclass,
+      year:filt.year,
+      month:filt.month,
+      week: filt.week,
+      roll: newfilt
+    }
+    setattendance(attendance.map(item => item.theclass == currentclass ? newfiltindex : item))
   };
 
   // Attendance Action Mutations
@@ -196,8 +301,8 @@ const ContextProvider = ({ children }) => {
 
   return (
     <all_provider.Provider value={{
-      alldata, attendance, currentroll, search, setsearch, searchresult, 
-      attendancedate, setattendancedate,
+      alldata, currentroll, searchresult, currentclass,setcurrentclass,
+      attenddate, setattenddate, attendance,setattendance,
       setyear: (val) => setattendancedate(prev => ({ ...prev, year: val })),
       setmonth: (val) => setattendancedate(prev => ({ ...prev, month: val })),
       setweek: (val) => setattendancedate(prev => ({ ...prev, week: val })),
